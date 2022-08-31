@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+DVROOT=${DVROOT:-.}
+
+AUTOBLINK=${AUTOBLINK:-1}
+EYE_SELECT=${EYE_SELECT:-"hack"}
+EYE_SHAPE=${EYE_SHAPE:-"None"}
+IRIS_ART=${IRIS_ART:-"None"}
+LID_ART=${LID_ART:-"None"}
+SCLERA_ART=${SCLERA_ART:-"None"}
+
+set +e
+sudo pkill wrap_demo
+sudo pkill python
+set -e
+
+#sleep 1
+LOGDIR=.
+LOG_OUT=${LOGDIR}/log.run.out
+LOG_ERR=${LOGDIR}/log.run.err
+
+ARGS="--autoblink ${AUTOBLINK} \
+      --eye_select ${EYE_SELECT} \
+      --eye_shape ${EYE_SHAPE} \
+      --iris_art ${IRIS_ART} \
+      --lid_art ${LID_ART} \
+      --sclera_art ${SCLERA_ART} \
+     "
+
+CMD="python ${DVROOT}/gecko.py \
+     ${ARGS} \
+     $* \
+     "
+#bash -c "${CMD} > >(tee ${LOG_OUT}) 2> >(tee ${LOG_ERR} >&2)"
+#bash -c "${CMD} > >(tee ${LOG_OUT})"
+bash -c "${CMD}"
+
+#PID=$!
+#sudo kill -9 ${PID}
+
+exit 0

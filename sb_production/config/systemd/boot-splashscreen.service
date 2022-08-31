@@ -1,0 +1,9 @@
+[Unit]
+Description=boot splash screen
+
+[Service]
+#ExecStart=/usr/bin/python3 /path/to/framebuffer-pythonscript.py -img /path/to/bootimage.jpg
+ExecStart=/usr/bin/python3 /home/pi/sb_production/config/systemd/framebuffer-pythonscript.py -img /home/pi/sb_production/config/systemd/splash_gecko_eye.jpg
+
+[Install]
+WantedBy=basic.target

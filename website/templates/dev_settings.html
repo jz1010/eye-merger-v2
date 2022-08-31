@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<link rel= "stylesheet" type= "text/css"  />
+{% block content %}
+    <form method="post" id="form-submit" name="form-submit">
+        <label>demo</label> <select name="demo">
+              <option value="" disabled selected>{{data["demo"]}}</option>
+              <option value=False>False</option>
+              <option value=True>True</option>
+        </select>
+
+        <br />
+
+        <label>demo eye tenure seconds</label> <input name="demo_eye_tenure_secs" placeholder={{data["demo_eye_tenure_secs"]}}>
+
+        <br />
+
+        <label>playa</label> <select name="playa">
+            <option value="" disabled selected>{{data["playa"]}}</option>
+            <option value=False>False</option>
+            <option value=True>True</option>
+        </select>
+
+        <br />
+
+        <label>joystick test</label> <select name="joystick_test">
+            <option value="" disabled selected>{{data["joystick_test"]}}</option>
+            <option value=False>False</option>
+            <option value=True>True</option>
+        </select>
+
+        <br />
+
+        <label>joystick mode</label> <input name="joystick_mode" placeholder={{data["joystick_mode"]}}>
+
+        <br />
+
+        <label>eye queue max</label> <input name="eye_queue_max" placeholder={{data["eye_queue_max"]}}>
+
+        <br />
+
+        <label>screenshots</label> <select name="screenshots">
+            <option value="" disabled selected>{{data["screenshots"]}}</option>
+            <option value=False>False</option>
+            <option value=True>True</option>
+        </select>
+
+        <br />
+
+        <label>timeout seconds</label> <select name="timeout_secs">
+            <option value="" disabled selected>{{data["timeout_secs"]}}</option>
+            <option value=None>None</option>
+        </select>
+
+        <br />
+
+        <label>eye orientation</label> <select name="eye_orientation">
+            <option value="" disabled selected>{{data["eye_orientation"]}}</option>
+            <option value="right">right</option>
+            <option value="left">left</option>
+        </select>
+
+        <br />
+
+        <label>JOYSTICK_X_IN</label> <input name="JOYSTICK_X_IN" placeholder={{data["JOYSTICK_X_IN"]}}>
+
+        <br />
+
+        <label>JOYSTICK_Y_IN</label> <input name="JOYSTICK_Y_IN" placeholder={{data["JOYSTICK_Y_IN"]}}>
+
+        <br />
+
+        <label>PUPIL_IN</label> <input name="PUPIL_IN" placeholder={{data["PUPIL_IN"]}}>
+
+        <br />
+
+        <label>JOYSTICK_X_FLIP</label> <select name="JOYSTICK_X_FLIP">
+            <option value="" disabled selected>{{data["JOYSTICK_X_FLIP"]}}</option>
+            <option value=False>False</option>
+            <option value=True>True</option>
+        </select>
+
+        <br />
+
+        <label>JOYSTICK_Y_FLIP</label> <select name="JOYSTICK_Y_FLIP">
+            <option value="" disabled selected>{{data["JOYSTICK_Y_FLIP"]}}</option>
+            <option value=False>False</option>
+            <option value=True>True</option>
+        </select>
+
+        <br />
+
+        <label>PUPIL_IN_FLIP</label> <select name="PUPIL_IN_FLIP">
+            <option value="" disabled selected>{{data["PUPIL_IN_FLIP"]}}</option>
+            <option value=False>False</option>
+            <option value=True>True</option>
+        </select>
+
+        <br />
+
+        <label>TRACKING</label> <select name="TRACKING">
+            <option value="" disabled selected>{{data["TRACKING"]}}</option>
+            <option value=False>False</option>
+            <option value=True>True</option>
+        </select>
+
+        <br />
+
+        <label>PUPIL_SMOOTH</label> <input name="PUPIL_SMOOTH" placeholder={{data["PUPIL_SMOOTH"]}}>
+
+        <br />
+
+        <label>pupil_min</label> <input name="pupil_min" placeholder={{data["pupil_min"]}}>
+
+        <br />
+
+        <label>pupil_max</label> <input name="pupil_max" placeholder={{data["pupil_max"]}}>
+
+        <br />
+
+        <label>pupil_normal</label> <input name="pupil_normal" placeholder={{data["pupil_normal"]}}>
+
+        <br />
+
+        <label>AUTOBLINK</label> <select name="AUTOBLINK">
+            <option value="" disabled selected>{{data["AUTOBLINK"]}}</option>
+            <option value=False>False</option>
+            <option value=True>True</option>
+        </select>
+
+        <br />
+
+        <label>switch_on_blink</label> <select name="switch_on_blink">
+            <option value="" disabled selected>{{data["switch_on_blink"]}}</option>
+            <option value=False>False</option>
+            <option value=True>True</option>
+        </select>
+
+        <br />
+
+        <label>blink_angry_duration_close_min_sec</label> <input name="blink_angry_duration_close_min_sec" placeholder={{data["blink_angry_duration_close_min_sec"]}}>
+
+        <br />
+
+        <label>blink_angry_duration_close_max_sec</label> <input name="blink_angry_duration_close_max_sec" placeholder={{data["blink_angry_duration_close_max_sec"]}}>
+
+        <br />
+
+        <label>blink_angry_duration_open_min_sec</label> <input name="blink_angry_duration_open_min_sec" placeholder={{data["blink_angry_duration_open_min_sec"]}}>
+
+        <br />
+
+        <label>blink_angry_duration_open_max_sec</label> <input name="blink_angry_duration_open_max_sec" placeholder={{data["blink_angry_duration_open_max_sec"]}}>
+
+        <br />
+
+        <label>blink_angry_interval_min_sec</label> <input name="blink_angry_interval_min_sec" placeholder={{data["blink_angry_interval_min_sec"]}}>
+
+        <br />
+
+        <label>blink_angry_interval_range_sec</label> <input name="blink_angry_interval_range_sec" placeholder={{data["blink_angry_interval_range_sec"]}}>
+
+        <br />
+
+        <label>blink_duration_close_min_sec</label> <input name="blink_duration_close_min_sec" placeholder={{data["blink_duration_close_min_sec"]}}>
+
+        <br />
+
+        <label>blink_duration_close_max_sec</label> <input name="blink_duration_close_max_sec" placeholder={{data["blink_duration_close_max_sec"]}}>
+
+        <br />
+
+        <label>blink_duration_open_min_sec</label> <input name="blink_duration_open_min_sec" placeholder={{data["blink_duration_open_min_sec"]}}>
+
+        <br />
+
+        <label>blink_duration_open_max_sec</label> <input name="blink_duration_open_max_sec" placeholder={{data["blink_duration_open_max_sec"]}}>
+
+        <br />
+
+        <label>blink_interval_min_sec</label> <input name="blink_interval_min_sec" placeholder={{data["blink_interval_min_sec"]}}>
+
+        <br />
+
+        <label>blink_interval_range_sec</label> <input name="blink_interval_range_sec" placeholder={{data["blink_interval_range_sec"]}}>
+
+        <br />
+
+        <label>blink_duration_joystickmin_sec</label> <input name="blink_duration_joystickmin_sec" placeholder={{data["blink_duration_joystickmin_sec"]}}>
+
+        <br />
+
+        <label>blink_duration_joystickmax_sec</label> <input name="blink_duration_joystickmax_sec" placeholder={{data["blink_duration_joystickmax_sec"]}}>
+
+        <br />
+
+        <label>joystick_service_interval_sec</label> <input name="joystick_service_interval_sec" placeholder={{data["joystick_service_interval_sec"]}}>
+
+        <br />
+
+        <label>pupil_auto_expand_sec</label> <input name="pupil_auto_expand_sec" placeholder={{data["pupil_auto_expand_sec"]}}>
+
+        <br />
+
+        <label>pupil_auto_contract_sec</label> <input name="pupil_auto_contract_sec" placeholder={{data["pupil_auto_contract_sec"]}}>
+
+        <br />
+
+        <label>pupil_squint_sec</label> <input name="pupil_squint_sec" placeholder={{data["pupil_squint_sec"]}}>
+
+        <br />
+
+        <label>pupil_dilate_sec</label> <input name="pupil_dilate_sec" placeholder={{data["pupil_dilate_sec"]}}>
+
+        <br />
+
+        <label>move_angry_duration_min_sec</label> <input name="move_angry_duration_min_sec" placeholder={{data["move_angry_duration_min_sec"]}}>
+
+        <br />
+
+        <label>move_angry_duration_max_sec</label> <input name="move_angry_duration_max_sec" placeholder={{data["move_angry_duration_max_sec"]}}>
+
+        <br />
+
+        <label>hold_angry_duration_min_sec</label> <input name="hold_angry_duration_min_sec" placeholder={{data["hold_angry_duration_min_sec"]}}>
+
+        <br />
+
+        <label>hold_angry_duration_max_sec</label> <input name="hold_angry_duration_max_sec" placeholder={{data["hold_angry_duration_max_sec"]}}>
+
+        <br />
+
+        <label>move_duration_min_sec</label> <input name="move_duration_min_sec" placeholder={{data["move_duration_min_sec"]}}>
+
+        <br />
+
+        <label>move_duration_max_sec</label> <input name="move_duration_max_sec" placeholder={{data["move_duration_max_sec"]}}>
+
+        <br />
+
+        <label>hold_duration_min_sec</label> <input name="hold_duration_min_sec" placeholder={{data["hold_duration_min_sec"]}}>
+
+        <br />
+
+        <label>hold_duration_max_sec</label> <input name="hold_duration_max_sec" placeholder={{data["hold_duration_max_sec"]}}>
+
+        <br />
+
+        <label>move_fast_duration_joystick_sec</label> <input name="move_fast_duration_joystick_sec" placeholder={{data["move_fast_duration_joystick_sec"]}}>
+
+        <br />
+
+        <label>move_slow_duration_joystick_sec</label> <input name="move_slow_duration_joystick_sec" placeholder={{data["move_slow_duration_joystick_sec"]}}>
+
+        <br />
+
+        <label>move_scripted_duration_joystick_sec</label> <input name="move_scripted_duration_joystick_sec" placeholder={{data["move_scripted_duration_joystick_sec"]}}>
+
+        <br />
+
+        <label>auto_restart_interval_sec</label> <input name="auto_restart_interval_sec" placeholder={{data["auto_restart_interval_sec"]}}>
+
+        <br />
+
+        <label>auto_restart_joystick_interval_sec</label> <input name="auto_restart_joystick_interval_sec" placeholder={{data["auto_restart_joystick_interval_sec"]}}>
+
+        <br />
+
+        <label>emotion_interval_sec</label> <input name="emotion_interval_sec" placeholder={{data["emotion_interval_sec"]}}>
+
+        <br />
+
+        <label>joystick_retry_init_sec</label> <input name="joystick_retry_init_sec" placeholder={{data["joystick_retry_init_sec"]}}>
+
+        <br />
+
+        <label>keyboard_retry_init_sec</label> <input name="keyboard_retry_init_sec" placeholder={{data["keyboard_retry_init_sec"]}}>
+
+        <br />
+
+
+
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}
+</html>

@@ -1,0 +1,152 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+USER=$(whoami)
+GROUP=develtools
+
+WORKDIR=/mnt/tmp_gecko/${USER}
+DROPBOX=/home/peck/Dropbox
+mkdir -p ${WORKDIR}
+
+F_IMAGE=$1
+DIRNAME=$(dirname ${F_IMAGE})
+FNAME=$(basename ${F_IMAGE})
+EXTENSION="${FNAME##*.}"
+if [ ${EXTENSION} == "gz" ]; then
+    FNAME_BASE=${FNAME%.img.*}
+else
+    FNAME_BASE=${FNAME%.img}
+fi
+
+
+F_IMAGE_WORK=${WORKDIR}/${FNAME_BASE}.img
+F_IMAGE_TRUNC=${WORKDIR}/${FNAME_BASE}_trunc.img
+
+#exit 0
+
+rm -f ${F_IMAGE_TRUNC} ${WORKDIR}/*.gz 
+
+if [ ! -e ${WORKDIR}/${FNAME} ]; then
+    if [ ${EXTENSION} == "gz" ]; then
+	zcat ${F_IMAGE} > ${F_IMAGE_WORK}
+    else
+	cp ${F_IMAGE} ${WORKDIR}
+    fi
+fi
+     
+sudo modprobe loop
+set +e
+sudo losetup -a
+
+#LOOPDEV=$(sudo losetup -f)
+#echo "LOOPDEV: ${LOOPDEV}"
+
+# Validate argument count here
+
+sudo chown ${USER}:${GROUP} ${F_IMAGE_WORK}
+
+## COMMAND RUN AND OUTPUT EXCERPTED BELOW
+sudo fdisk -l ${F_IMAGE_WORK}
+
+#Disk 2019-03-25b_preload.img: 59.5 GiB, 63864569856 bytes, 124735488 sectors
+#Units: sectors of 1 * 512 = 512 bytes
+#Sector size (logical/physical): 512 bytes / 512 bytes
+#I/O size (minimum/optimal): 512 bytes / 512 bytes
+#Disklabel type: dos
+#Disk identifier: 0x71cce890
+
+#Device                   Boot Start       End   Sectors  Size Id Type
+#2019-03-25b_preload.img1       8192     98045     89854 43.9M  c W95 FAT32 (LBA)
+#2019-03-25b_preload.img2      98304 124735487 124637184 59.4G 83 Linux
+
+START=98304
+
+#set +e
+#sudo losetup -d ${LOOPDEV}
+#set -e
+
+# COMMAND RUN AND OUTPUT EXCERPTED BELOW
+LOOPDEV=$(sudo losetup -f)
+sudo losetup ${LOOPDEV} ${F_IMAGE_WORK} -o $((${START}*512))
+#sudo gparted ${LOOPDEV}
+
+# Free space preceding (MiB):  0
+# New size (MiB):  2646
+# Free space following (MiB):  58232
+# Align to:  MiB
+
+NEWSIZE=2709504
+sudo e2fsck -y -f ${LOOPDEV}
+sudo resize2fs -p ${LOOPDEV} ${NEWSIZE}K
+
+set +e
+sudo losetup -d ${LOOPDEV}
+set -e
+
+#exit 0
+
+LOOPDEV=$(sudo losetup -f)
+sudo losetup ${LOOPDEV} ${F_IMAGE_WORK}
+set +e
+sudo fdisk ${LOOPDEV} <<EOF
+d
+2
+n
+p
+2
+${START}
++${NEWSIZE}K
+w
+EOF
+set -e
+
+# Confirm changes
+sudo fdisk -l ${LOOPDEV}
+
+#Disk /dev/loop0: 59.5 GiB, 63864569856 bytes, 124735488 sectors
+#Units: sectors of 1 * 512 = 512 bytes
+#Sector size (logical/physical): 512 bytes / 512 bytes
+#I/O size (minimum/optimal): 512 bytes / 512 bytes
+#Disklabel type: dos
+#Disk identifier: 0x71cce890
+
+#Device       Boot Start     End Sectors  Size Id Type
+#/dev/loop0p1       8192   98045   89854 43.9M  c W95 FAT32 (LBA)
+#/dev/loop0p2      98304 5517311 5419008  2.6G 83 Linux
+
+#exit 0
+
+END=5517311
+
+set +e
+sudo losetup -d ${LOOPDEV}
+set -e
+
+mv ${F_IMAGE_WORK} ${F_IMAGE_TRUNC}
+truncate -s $(((${END}+1)*512)) ${F_IMAGE_TRUNC}
+F_IMAGE_TRUNC_GZ=${F_IMAGE_TRUNC}.gz
+gzip -c ${F_IMAGE_TRUNC} > ${F_IMAGE_TRUNC_GZ}
+sudo cp ${F_IMAGE_TRUNC_GZ} ${DIRNAME}
+sudo mv ${F_IMAGE_TRUNC_GZ} ${DROPBOX}/Gecko
+
+exit 0
+
+# ERROR:  Mount below doesn't succeed
+LOOPDEV=$(sudo losetup -f)
+sudo losetup ${LOOPDEV} ${F_IMAGE_TRUNC} -o $((${START}*512))
+sudo mkdir -p /mnt/imageroot
+sudo mount ${LOOPDEV} /mnt/imageroot
+sudo dcfldd if=/dev/zero of=/mnt/imageroot/zero.txt
+sudo rm /mnt/imageroot/zero.txt
+sudo umount /mnt/imageroot
+sudo rmdir /mnt/imageroot
+set +e
+sudo losetup -d ${LOOPDEV}
+set -e
+
+exit 0
+
+# Actions on client side
+#sudo raspi-config --expand-rootfs
+#sudo shutdown -r now

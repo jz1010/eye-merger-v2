@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#set -euxo pipefail
+
+SB=${SB:-/home/pi/sb_production}
+
+while true; do
+    cd ${SB}
+    sudo git pull
+    sudo chown -R pi:pi ${SB}
+    ${SB}/utils/demo $*
+done

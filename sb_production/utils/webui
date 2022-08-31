@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Upgrade section
+#sudo pip install openpyxl
+
+set -euxo pipefail
+
+#TIMEOUT_SECS=${TIMEOUT_SECS:-1200} # 20 mins
+SB=${SB:-/home/pi/sb_production}
+FNAME_CONSTRAINTS=${SB}/hack_graphics/hack_constraints.xlsx
+
+cd ${SB}
+python gecko.py \
+       --autoblink 1 \
+       --eye_constraints ${FNAME_CONSTRAINTS} \
+       $*
+

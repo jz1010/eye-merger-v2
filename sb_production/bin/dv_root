@@ -1,0 +1,20 @@
+#!/bin/bash
+set -x
+set -e
+
+if [ -n "$DV_ROOT" ]; then
+   echo "$DV_ROOT"
+   exit 0
+fi
+
+cpath=`pwd`
+while [ "${cpath}" != '/' ]; do
+    if [ -f "${cpath}"/.dv_root ]; then
+	echo ${cpath}
+	exit 0
+    fi
+    cpath=`dirname "${cpath}"`
+done
+
+echo "** ERROR: DV ROOT COULD NOT BE LOCATED!" 1>&2
+

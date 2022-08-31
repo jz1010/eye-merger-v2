@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Upgrade section
+sudo pip install openpyxl
+
+set -euxo pipefail
+
+TIMEOUT_SECS=${TIMEOUT_SECS:-1200} # 20 mins
+SB=${SB:-/home/pi/sb_production}
+
+cd ${SB}
+python gecko.py --demo --timeout_secs ${TIMEOUT_SECS} $*
+

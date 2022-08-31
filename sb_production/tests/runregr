@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Test mode is the first argument on the command line.
+# Test mode is specifed in the Jenkins Build->Execute shell->Command box.
+
+set -euxo pipefail
+
+export DVROOT=`dv_root`
+
+if [ $# -eq 0 ]; then
+    TEST_MODE="smoke"
+else    
+    TEST_MODE=$1
+fi
+
+if [ ${TEST_MODE} == "nightly" ]; then
+    TIMEOUT_SECS=600
+elif [ ${TEST_MODE} == "smoke" ]; then
+    TIMEOUT_SECS=60
+fi    
+
+if [ ${TEST_MODE} != "nightly_tools" ]; then
+    # Use case production
+    export TIMEOUT_SECS
+    export SB=${DVROOT}
+
+    # Use case demo
+    ${DVROOT}/utils/demo
+
+    # Use case constrained demo
+    ${DVROOT}/utils/demo --eye_constraints "hack_graphics/hack_constraints.xlsx"
+    
+    # Use case development
+    export EYE_SELECT="hack"
+    ${DVROOT}/run --timeout_secs ${TIMEOUT_SECS}
+    ${DVROOT}/run --timeout_secs ${TIMEOUT_SECS} --joystick_test 
+    ${DVROOT}/run --timeout_secs ${TIMEOUT_SECS} --eye_orientation right 
+    ${DVROOT}/run --timeout_secs ${TIMEOUT_SECS} --eye_orientation left
+    ${DVROOT}/run --timeout_secs ${TIMEOUT_SECS} --autoblink 0
+    ${DVROOT}/run --timeout_secs ${TIMEOUT_SECS} --eye_constraints hack_graphics/hack_constraints.xlsx
+    ${DVROOT}/run --timeout_secs ${TIMEOUT_SECS} --demo
+    ${DVROOT}/run --timeout_secs ${TIMEOUT_SECS} --playa
+    ${DVROOT}/run --screenshots
+
+# These modes are set up as infinite loops    
+    ${DVROOT}/utils/playa --timeout_secs ${TIMEOUT_SECS}
+    ${DVROOT}/utils/demo --timeout_secs ${TIMEOUT_SECS}    
+fi
+
+
+DIR_IMG=/mnt/skynet/sboxes_gecko
+#FNAME_IMAGE=${DIR_IMG}/2019-06-09_demo.img
+FNAME_IMAGE=${DIR_IMG}/2019-06-09_demo.img.gz
+
+if [ ${TEST_MODE} == "nightly_tools" ]; then
+    ${DVROOT}/utils/gecko_mkimg ${FNAME_IMAGE} |& tee log.gecko_mkimg
+fi
+
+echo "** REGRESSION PASSED **"
+exit 0

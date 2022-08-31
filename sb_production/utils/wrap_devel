@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+#export SB=${SB:-/home/pi/sb2_devel}
+export SB=${SB:-/home/pi/sb_production}
+
+#     --playa \
+
+cd ${SB}
+sudo chown -R pi:pi ${SB}
+${SB}/utils/webui \
+     --eye_select hack \
+     --joystick_mode=0 \
+     --joystick_service_interval_sec=0.0 \
+     --move_fast_duration_joystick_sec=0.0 \
+     $*

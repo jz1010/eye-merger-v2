@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+  <h1>Hack</h1>
+  <form method="post" id="form-submit" name="form-submit">
+        <label>eye_shape</label> <select name="eye_shape">
+            <option value="{{cur_eye_shape}}" >{{cur_eye_shape}}</option>
+            {% for hack_eye_shape in data["hack_eye_shapes"] %}
+                <option value={{hack_eye_shape}}>{{hack_eye_shape}}</option>
+            {% endfor %}
+        </select>
+
+        <br />
+
+        <label>iris_art</label> <select name="iris_art">
+            <option value="{{cur_iris_art}}" >{{cur_iris_art}}</option>
+            {% for hack_iris in data["hack_iris"] %}
+                <option value={{hack_iris}}>{{hack_iris}}</option>
+            {% endfor %}
+        </select>
+
+        <br />
+
+        <label>lid_art</label> <select name="lid_art">
+            <option value="{{cur_lid_art}}" >{{cur_lid_art}}</option>
+            {% for lid_art in data["hack_lids"] %}
+                <option value={{lid_art}}>{{lid_art}}</option>
+            {% endfor %}
+        </select>
+
+        <br />
+
+        <label>sclera_art</label> <select name="sclera_art">
+            <option value="{{cur_sclera_art}}" >{{cur_sclera_art}}</option>
+            {% for sclera_art in data["hack_scleras"] %}
+                <option value={{sclera_art}}>{{sclera_art}}</option>
+            {% endfor %}
+        </select>
+
+        <br />
+
+        <input type="submit" name="submit_button" value="Test Eye">
+
+        <br />
+
+        <input type="submit" name="submit_button" value="Save Eye">
+  </form>
+</body>
+</html>

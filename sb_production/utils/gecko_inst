@@ -1,0 +1,119 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+SB_GECKO_REMOTE=/mnt/skynet/sboxes_gecko/sb0_gecko
+SB_GECKO_LOCAL=/home/pi/sb_production
+REPO_HTTP=https://jcpeck@bitbucket.org/jcpeck/gecko_eyes.git
+TMPDIR=/var/tmp
+
+# Set up NFS client for development
+function nfs_client_setup {
+   sudo apt-get install nfs-common git -y
+   sudo mkdir -p /mnt/skynet
+   set +e
+   sudo umount /mnt/skynet
+   set -e
+   sudo chown -R pi:pi /mnt/skynet
+   # This addition should be idempotent
+   cat /etc/fstab | grep -v "Skynet" > /var/tmp/fstab
+sudo cat <<_EOF_ >>/var/tmp/fstab
+192.168.123.220:/volume1/Skynet	/mnt/skynet	nfs	rw,hard,intr,nolock,rsize=32768,wsize=32768	0 0
+_EOF_
+   sudo cp /var/tmp/fstab /etc/fstab
+   cat /etc/fstab
+   sudo mount -a
+}
+
+# Configure Pi3 for operation
+function cfg_setup {
+   sudo cp -f config/etc/default/keyboard /etc/default
+   sudo cp -f config/systemd/boot-splashscreen.service /lib/systemd/system
+   sudo systemctl daemon-reload   
+   sudo systemctl enable boot-splashscreen.service   
+   sudo systemctl start boot-splashscreen.service
+
+   # Configure to ignore network?
+}
+
+# For development/regression node
+function jenkins_setup {
+   sudo apt-get install oracle-java8-jdk -y
+   sudo mkdir -p /mnt/regrtmp
+   set +e
+   sudo umount /mnt/regrtmp
+   set -e
+   sudo chown -R pi:pi /mnt/regrtmp
+   # This addition should be idempotent
+   cat /etc/fstab | grep -v "regrtmp" > /var/tmp/fstab
+sudo cat <<_EOF_ >>/var/tmp/fstab
+192.168.123.220:/volume1/regrtmp	/mnt/regrtmp	nfs	rw,hard,intr,nolock,rsize=32768,wsize=32768	0 0
+_EOF_
+   sudo cp /var/tmp/fstab /etc/fstab
+   cat /etc/fstab
+   sudo mount -a    
+}
+
+### Main setup begins here ###
+
+if [ ! -f .gecko_runonce ]; then
+   sudo apt-get update -y
+   nfs_client_setup
+
+   # NFS install for development
+   #rm -rf /home/pi/sb0_gecko
+   #cp -r ${SB_GECKO_REMOTE} /home/pi
+   #mv /home/pi/sb0_gecko ${SB_GECKO_LOCAL}
+
+   # Install from repo
+   rm -rf  ${SB_GECKO_LOCAL}
+   git clone ${REPO_HTTP} ${SB_GECKO_LOCAL}
+   
+   sudo systemctl enable ssh
+   sudo systemctl start ssh
+   sudo apt-get install emacs git python-pip python3-pip -y   
+#   sudo apt-get install python-pygame -y
+   sudo pip install evdev
+   sudo apt-get install libjpeg-dev -y
+   sudo pip3 install FBpyGIF
+
+   # Clean up
+   sudo apt-get remove --purge libreoffice-* -y
+   sudo apt-get remove --purge wolfram-engine -y
+   sudo apt-get upgrade -y
+   sudo apt-get clean
+   echo -e "Gecko1\nGecko1" | sudo passwd pi
+   touch .gecko_runonce
+   sudo reboot
+fi
+
+ifconfig
+
+if [ ! -f .gecko_pieyes ]; then
+   cd ${SB_GECKO_LOCAL}
+   cfg_setup
+   cd -
+   #URL_SRC="https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/pi-eyes.sh"
+   #curl ${URL_SRC} > pi-eyes.sh
+
+   # Execute the configuration procedure
+   #sudo bash pi-eyes.sh
+   sudo bash ${SB_GECKO_LOCAL}/utils/pi-eyes.sh
+   sudo cp -f ${SB_GECKO_LOCAL}/config/boot/config.txt /boot
+   sudo cat /boot/cmdline.txt | sed -e s/console=tty1/console=tty3/g > ${TMPDIR}/cmdline.txt 
+   sudo paste -d'\0' ${TMPDIR}/cmdline.txt \
+	${SB_GECKO_LOCAL}/config/boot/cmdline.txt \
+	> /boot/cmdline.txt
+   rm -f ${TMPDIR}/cmdline.txt
+   sudo cp -f ${SB_GECKO_LOCAL}/config/etc/rc.local /etc
+   touch .gecko_pieyes
+   sudo reboot
+fi
+
+if [ -f .develop ]; then
+   jenkins_setup
+fi
+
+
+# Useful tools for more setup via CLI
+# sudo raspi-config
